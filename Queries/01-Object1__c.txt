@@ -1,0 +1,14 @@
+select 
+'ExternalID__c' as 'ExternalID__c' 
+'Name' as Name,
+'Parent__c}Child__c' as Child__c,
+'CustomField1__c' as CustomField1__c 
+'CustomField2__c' as CustomField2__c 
+union all 
+SELECT
+cast([TABLE1].[EXTERNALID] as varchar(50)),
+cast([TABLE1].[NAME] as varchar(50)),
+cast([TABLE1].[CHILD] as varchar(50)),
+cast([TABLE1].[CUSTOMFIELD1] as varchar(50)),
+cast([TABLE1].[CUSTOMFIELD2] as varchar(50))
+FROM [DATABASE].[dbo].[TABLE1]
