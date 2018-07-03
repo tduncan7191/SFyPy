@@ -2,8 +2,6 @@
 
 SFyPy inserts, updates, and upserts data from your database to multiple Salesforce objects in a bulk transfer.
 
-Latest Version: 0.0.0
-
 SFyPy Overview
 SFyPy collects data from the database and stores it into csv files. 
 Once the data has been collected, the application will transfer that data into Salesforce using a bulk method. 
