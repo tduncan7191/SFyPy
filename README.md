@@ -104,7 +104,7 @@ The two zeros represent the order you want the files to execute and the Object__
 Open the text file and add your select from the view you created, then click save.
 Example: Select * FROM [Database].[dbo].[vw_Object__c].
 
-#From Dev to Production
+# From Dev to Production
 
 If any changes are needing to be done to the code, then these are the steps to move the code from dev to production.
 
@@ -117,7 +117,7 @@ If any changes are needing to be done to the code, then these are the steps to m
 7. Go to dist, ScheduleJob, and copy the ScheduleJob.exe from that folder into Automate SFyPy
 
 
-#Troubleshooting
+# Troubleshooting
 
 Check Salesforce Bulk API results
 
