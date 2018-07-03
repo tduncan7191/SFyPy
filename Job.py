@@ -17,14 +17,13 @@ outputPath = os.getcwd() + "/filesToUpload/"
 settingsPath = os.getcwd() + "/settings.txt" 
 logPath = os.getcwd() + "/log.txt" 
 sfParentChildDelimeter = "}"
-batchSize = 5000
 
 def readSettings():
         with open(settingsPath, "r") as f: 
                     settings = f.read()
 
-        global txtRecordType, optionAction, txtServerName, txtDatabaseName, txtServerUsername, txtServerPassword, txtSfUsername, txtSfPassword, txtSfSecurityToken, txtUseSfSandbox
-        txtRecordType, optionAction, txtServerName, txtDatabaseName, txtServerUsername, txtServerPassword, txtSfUsername, txtSfPassword, txtSfSecurityToken, txtUseSfSandbox = settings.split('|')
+        global txtRecordType, optionAction, txtServerName, txtDatabaseName, txtServerUsername, txtServerPassword, txtSfUsername, txtSfPassword, txtSfSecurityToken, txtUseSfSandbox, txtBatchSize
+        txtRecordType, optionAction, txtServerName, txtDatabaseName, txtServerUsername, txtServerPassword, txtSfUsername, txtSfPassword, txtSfSecurityToken, txtUseSfSandbox, txtBatchSize = settings.split('|')
 
 
 def isDate(date_text):
@@ -60,6 +59,7 @@ def uploadResultsToSalesforce(sfObject, action, rows, sfUsername, sfPassword, sf
                         url = loginXmlRoot[0][0][0][3].text                        
                         instance = url[8:12]
                 except:
+                        print("\r\n Invalid Salesforce Login \r\n")
                         return "Invalid Salesforce Login"
                 
                 externalId = rows[0][0]
@@ -68,17 +68,19 @@ def uploadResultsToSalesforce(sfObject, action, rows, sfUsername, sfPassword, sf
                 for i in range(len(rows)):
                         j += 1
                         batchRows.append(rows[i])
-                        if(j == batchSize):                                
+                        if(str(j) == txtBatchSize):
                                 batchJob(batchRows, action, instance, externalId, sessionId, sfObject, sfUsername, sfPassword, sfSecurityToken, useSfSandbox)
                                 batchRows = []
                                 batchRows.insert(0, rows[0])
                                 j = 0
                               
                 batchResult = batchJob(batchRows, action, instance, externalId, sessionId, sfObject, sfUsername, sfPassword, sfSecurityToken, useSfSandbox)                
-                
+                                
                 return batchResult
                 
         except Exception as e:
+                print("\n\r" + str(e))
+                input("")
                 return str(e)
 
 def batchJob(batchRows, action, instance, externalId, sessionId, sfObject, sfUsername, sfPassword, sfSecurityToken, useSfSandbox):
@@ -97,17 +99,24 @@ def batchJob(batchRows, action, instance, externalId, sessionId, sfObject, sfUse
         
         if(jobId == "InvalidJob"):
                 return jobXmlRoot[1].text
-               
-        objectXml = createObjectXml(batchRows, sfObject, action, sfUsername, sfPassword, sfSecurityToken, useSfSandbox)
-                       
+        
+        print("\r\n ...creating xml\r\n")     
+        objectXml = createObjectXml(batchRows, sfObject, action, sfUsername, sfPassword, sfSecurityToken, useSfSandbox)        
+        print("\r\n finished xml \r\n")
+        
         if(objectXml == "<sObject></sObject>"):
+                print("Could not find records to update")
                 return "Could not find records to update"
-
-        addBatch(instance, sessionId, jobId, objectXml)
         
+        print("\r\n ...adding batch \r\n")        
+        bResults = addBatch(instance, sessionId, jobId, objectXml)
+        print("\r\n" + bResults)
+        
+        print("\r\n ...closing job \r\n")
         closeResponse = closeJob(instance, sessionId, jobId)
+        print("\r\n" + bResults)
         
-        return closeResponse
+        return bResults + "\n\r" + closeResponse
 
 
 def createObjectXml(rows, sfObject, action, sfUsername, sfPassword, sfSecurityToken, useSfSandbox):        
