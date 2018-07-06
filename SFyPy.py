@@ -16,7 +16,7 @@ arrAction = ['upsert','insert','update']
 with open(settingsPath, "r") as f: 
         settings = f.read()
 
-txtRecordType, optionAction, txtServerName, txtDatabaseName, txtServerUsername, txtServerPassword, txtSfUsername, txtSfPassword, txtSfSecurityToken, txtUseSfSandbox, txtBatchSize = settings.split('|')
+txtRecordType, optionAction, txtServerName, txtDatabaseName, txtServerUsername, txtServerPassword, txtSfUsername, txtSfPassword, txtSfSecurityToken, txtUseSfSandbox, txtBatchSize, txtSFInstance = settings.split('|')
     
 def main():
     root = Tk()
@@ -34,7 +34,7 @@ def btnGenerate_Clicked():
 def btnSave_Clicked():
     try:
         with open(settingsPath, 'w') as f:
-            f.write(eRecordType.get() + "|" + strVarAction.get() + "|" + eServerName.get() + "|" + eDatabaseName.get() + "|" + eServerUsername.get() + "|" + eServerPassword.get() + "|" + eSfUsername.get() + "|" + eSfPassword.get() + "|" + eSfSecurityToken.get() + "|" + str(vUseSfSandbox.get()) + "|" + eBatchSize.get())
+            f.write(eRecordType.get() + "|" + strVarAction.get() + "|" + eServerName.get() + "|" + eDatabaseName.get() + "|" + eServerUsername.get() + "|" + eServerPassword.get() + "|" + eSfUsername.get() + "|" + eSfPassword.get() + "|" + eSfSecurityToken.get() + "|" + str(vUseSfSandbox.get()) + "|" + eBatchSize.get() + "|" + eSFInstance.get())
         
         tkMessageBox.showinfo("Saved", "Your settings have been saved.")
     except Exception as e:
@@ -165,24 +165,32 @@ def render(root):
     vBatchSize = StringVar(root, value=txtBatchSize)
     eBatchSize = Entry(root, textvariable=vBatchSize, width=130)
     eBatchSize.grid(row=12, column=1)
+
+    lblSFInstance = Label(root, text="Salesforce Instance")
+    lblSFInstance.grid(row=13, column=0)
+
+    global eSFInstance
+    vSFInstance = StringVar(root, value=txtSFInstance)
+    eSFInstance = Entry(root, textvariable=vSFInstance, width=130)
+    eSFInstance.grid(row=13, column=1)
     
     lblHidden = Label(root)
-    lblHidden.grid(row=13, column=0)
+    lblHidden.grid(row=14, column=0)
 
     btnSave = Button(root, text="Save Settings", command=btnSave_Clicked)
-    btnSave.grid(row=14, column=0)
+    btnSave.grid(row=15, column=0)
 
     btnRun = Button(root, text="Upload Query", command=btnRun_Clicked)
-    btnRun.grid(row=14, column=2)
+    btnRun.grid(row=15, column=2)
     
     btnRunAll = Button(root, text="Upload all CSVs", command=btnRunAll_Clicked)
-    btnRunAll.grid(row=14, column=3)
+    btnRunAll.grid(row=15, column=3)
     
     btnGenerate = Button(root, text="Generate Test File", command=btnGenerate_Clicked)
-    btnGenerate.grid(row=14, column=1)
+    btnGenerate.grid(row=15, column=1)
     
     lblHidden = Label(root)
-    lblHidden.grid(row=15, column=0)
+    lblHidden.grid(row=16, column=0)
 
     root.update()
     root.mainloop()

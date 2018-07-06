@@ -22,8 +22,8 @@ def readSettings():
         with open(settingsPath, "r") as f: 
                     settings = f.read()
 
-        global txtRecordType, optionAction, txtServerName, txtDatabaseName, txtServerUsername, txtServerPassword, txtSfUsername, txtSfPassword, txtSfSecurityToken, txtUseSfSandbox, txtBatchSize
-        txtRecordType, optionAction, txtServerName, txtDatabaseName, txtServerUsername, txtServerPassword, txtSfUsername, txtSfPassword, txtSfSecurityToken, txtUseSfSandbox, txtBatchSize = settings.split('|')
+        global txtRecordType, optionAction, txtServerName, txtDatabaseName, txtServerUsername, txtServerPassword, txtSfUsername, txtSfPassword, txtSfSecurityToken, txtUseSfSandbox, txtBatchSize, txtSFInstance
+        txtRecordType, optionAction, txtServerName, txtDatabaseName, txtServerUsername, txtServerPassword, txtSfUsername, txtSfPassword, txtSfSecurityToken, txtUseSfSandbox, txtBatchSize, txtSFInstance = settings.split('|')
 
 
 def isDate(date_text):
@@ -56,8 +56,12 @@ def uploadResultsToSalesforce(sfObject, action, rows, sfUsername, sfPassword, sf
                 
                 try:
                         sessionId = loginXmlRoot[0][0][0][4].text
-                        url = loginXmlRoot[0][0][0][3].text                        
-                        instance = url[8:12]
+                        print(sessionId)
+                        url = loginXmlRoot[0][0][0][3].text
+                        print(url)
+                        #instance = url[8:25]
+                        instance = txtSFInstance
+                        print(instance)
                 except:
                         print("\r\n Invalid Salesforce Login \r\n")
                         return "Invalid Salesforce Login"
@@ -80,7 +84,6 @@ def uploadResultsToSalesforce(sfObject, action, rows, sfUsername, sfPassword, sf
                 
         except Exception as e:
                 print("\n\r" + str(e))
-                input("")
                 return str(e)
 
 def batchJob(batchRows, action, instance, externalId, sessionId, sfObject, sfUsername, sfPassword, sfSecurityToken, useSfSandbox):
